@@ -12,6 +12,8 @@ import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
 import java.awt.BorderLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class InteractionWindow extends JFrame 
 {
@@ -27,10 +29,38 @@ public class InteractionWindow extends JFrame
         JTextPane editor  = new JTextPane();
         JEditorPane display = new JEditorPane("text/html", "");
         display.setEditable(false);
+        
+        editor.addKeyListener(new KeyListener() 
+        {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                String markdown = editor.getText();
+                Parser parser = Parser.builder().build();
+                Node document = parser.parse(markdown);
+                HtmlRenderer renderer = HtmlRenderer.builder().build();
+                String html = renderer.render(document);
+                display.setText(html);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                // TODO Auto-generated method stub
+                
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // TODO Auto-generated method stub
+                
+            }
+        });
+        
         innerSplitPane.add(editor, JSplitPane.LEFT);
         innerSplitPane.add(display, JSplitPane.RIGHT);
         innerSplitPane.setResizeWeight(evenSplit);
         innerSplitPane.setVisible(true);
+        
         outerSplitPane.add(scrollpane, JSplitPane.LEFT);
         outerSplitPane.add(innerSplitPane, JSplitPane.RIGHT);
         outerSplitPane.setResizeWeight(minorFeature);
@@ -44,7 +74,7 @@ public class InteractionWindow extends JFrame
         menu.add(saveFile);
         menuBar.add(menu);
         add(menuBar, BorderLayout.NORTH);
-        setSize(1600, 900);
+        setSize(800, 600);
     }
     
     public static void main(String[] args) 
