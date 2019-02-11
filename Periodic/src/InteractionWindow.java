@@ -35,24 +35,32 @@ public class InteractionWindow extends JFrame
 
             @Override
             public void keyTyped(KeyEvent e) {
+                /*String markdown = editor.getText();
+                Parser parser = Parser.builder().build();
+                Node document = parser.parse(markdown);
+                HtmlRenderer renderer = HtmlRenderer.builder().build();
+                String html = renderer.render(document);
+                display.setText(html);*/
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                /*String markdown = editor.getText();
+                Parser parser = Parser.builder().build();
+                Node document = parser.parse(markdown);
+                HtmlRenderer renderer = HtmlRenderer.builder().build();
+                String html = renderer.render(document);
+                display.setText(html);*/
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
                 String markdown = editor.getText();
                 Parser parser = Parser.builder().build();
                 Node document = parser.parse(markdown);
                 HtmlRenderer renderer = HtmlRenderer.builder().build();
                 String html = renderer.render(document);
                 display.setText(html);
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                // TODO Auto-generated method stub
-                
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                // TODO Auto-generated method stub
-                
             }
         });
         
