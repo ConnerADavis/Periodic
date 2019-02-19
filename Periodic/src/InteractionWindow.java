@@ -7,6 +7,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
+import javax.swing.JTree;
+
 import org.commonmark.node.*;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
@@ -21,9 +23,10 @@ public class InteractionWindow extends JFrame
     private double minorFeature = 0.1;
     public InteractionWindow()
     {
+        
         // TODO: declutter this
         setLayout(new BorderLayout());
-        JScrollPane scrollpane = new JScrollPane();
+        JTree filesDisplay = new JTree();
         JSplitPane outerSplitPane = new JSplitPane();
         JSplitPane innerSplitPane = new JSplitPane();
         JTextPane editor  = new JTextPane();
@@ -69,7 +72,7 @@ public class InteractionWindow extends JFrame
         innerSplitPane.setResizeWeight(evenSplit);
         innerSplitPane.setVisible(true);
         
-        outerSplitPane.add(scrollpane, JSplitPane.LEFT);
+        outerSplitPane.add(filesDisplay, JSplitPane.LEFT);
         outerSplitPane.add(innerSplitPane, JSplitPane.RIGHT);
         outerSplitPane.setResizeWeight(minorFeature);
         add(outerSplitPane, BorderLayout.CENTER);

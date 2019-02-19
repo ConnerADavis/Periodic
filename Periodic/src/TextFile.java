@@ -1,5 +1,6 @@
 
-public class TextFile {
+public class TextFile extends DirectoryObject{
+    private static final long serialVersionUID = 1L;
     private String name;
     private String actualLocation;
     
@@ -48,5 +49,15 @@ public class TextFile {
             e.printStackTrace();
             return null;
         }
+    }
+    
+    public String toString()
+    {
+        return this.name;
+    }
+    
+    public boolean getAllowsChildren()
+    {
+        return false;
     }
 }
