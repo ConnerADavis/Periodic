@@ -18,6 +18,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -78,6 +80,37 @@ public class InteractionWindow extends JFrame
             }
         });
         
+        filesDisplay.addMouseListener(new MouseListener() 
+        {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {}
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+			@Override
+			public void mouseExited(MouseEvent e) {}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if(e.getClickCount() == 2)
+				{
+					Object toOpen = filesDisplay.getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
+					if(toOpen instanceof TextFile)
+					{
+						currentFile = (TextFile)toOpen;
+						String content = SaveAndLoadUtilities.loadFile(currentFile);
+						editor.setText(content);
+						Parser parser = Parser.builder().build();
+						Node document = parser.parse(content);
+						HtmlRenderer renderer = HtmlRenderer.builder().build();
+						String html = renderer.render(document);
+						display.setText(html);
+					}
+				}
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+        });
+        
         innerSplitPane.add(editor, JSplitPane.LEFT);
         innerSplitPane.add(display, JSplitPane.RIGHT);
         innerSplitPane.setResizeWeight(evenSplit);
@@ -92,13 +125,29 @@ public class InteractionWindow extends JFrame
         JMenu menu = new JMenu("Placeholder Menu Name");
         JMenuItem login = new JMenuItem("log in");
         JMenuItem saveFile = new JMenuItem("save changes");
-        JMenuItem saveNew = new JMenuItem("save to selected location");
+        JMenuItem saveNew = new JMenuItem("save current file to selected folder");
         JMenuItem createNewFolder = new JMenuItem("create new folder");
+        
+        saveFile.addActionListener(new ActionListener() 
+        {
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				if(currentFile == null)
+				{
+					invalidInputMessage("current file is not saved anywhere");
+					return;
+				}
+				String content = editor.getText();
+				SaveAndLoadUtilities.saveFile(currentFile, content);
+			}
+        });
         
         saveNew.addActionListener(new ActionListener() 
         {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) 
+            {
                 if(currentFile == null)
                 {
                     String name = getNameInput("File");
@@ -114,6 +163,18 @@ public class InteractionWindow extends JFrame
                 }
                 String content = editor.getText();
                 SaveAndLoadUtilities.saveFile(currentFile, content);
+                
+                Object folderOrFile = filesDisplay.getSelectionPath().getLastPathComponent();
+                if(folderOrFile instanceof Folder)
+                {
+                	Folder containingFolder = (Folder)folderOrFile;
+                	containingFolder.addChild(currentFile);
+                	filesDisplay.updateUI();
+                }
+                else
+                {
+                	invalidInputMessage("You must have one folder selected to save the file in.");
+                }
             }
         });
         
@@ -132,7 +193,7 @@ public class InteractionWindow extends JFrame
                 }
                 else
                 {
-                    noFolderSelected();
+                    invalidInputMessage("No folder selected or object selected is not a folder.");
                 }
             }
         });
@@ -165,9 +226,9 @@ public class InteractionWindow extends JFrame
         return in;
     }
     
-    private void noFolderSelected()
+    private void invalidInputMessage(String str)
     {
-        JOptionPane.showMessageDialog(this, new JLabel("No Folder Selected"), 
+        JOptionPane.showMessageDialog(this, new JLabel(str), 
                 "Message",JOptionPane.INFORMATION_MESSAGE);
     }
     

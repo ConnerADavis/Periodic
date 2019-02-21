@@ -2,10 +2,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Scanner;
 
 public class SaveAndLoadUtilities 
 {
@@ -75,5 +79,26 @@ public class SaveAndLoadUtilities
             e.printStackTrace();
             return false;
         }
+    }
+    
+    public static String loadFile(TextFile file)
+    {
+    	String toReturn = "";
+    	String location = file.getLocation();
+    	try 
+    	{
+    		toReturn = new String(Files.readAllBytes(Paths.get(location)));
+    		return toReturn;
+		} 
+    	catch (FileNotFoundException e) 
+    	{
+			e.printStackTrace();
+			return toReturn;
+		} 
+    	catch (IOException e) 
+    	{
+    		e.printStackTrace();
+    		return toReturn;
+		}
     }
 }
