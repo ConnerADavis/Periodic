@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -39,6 +40,7 @@ public class SaveAndLoadUtilities
             ObjectInputStream save = new ObjectInputStream(saveFile);
             Object obj = save.readObject();
             root = (Folder)obj;
+            save.close();
             return root;
         }
         catch (FileNotFoundException e) 
@@ -61,6 +63,17 @@ public class SaveAndLoadUtilities
     {
         String location = file.getLocation();
         File realFile = new File(location);
-        return true;
+        try 
+        {
+            FileWriter writer = new FileWriter(realFile);
+            writer.write(content);
+            writer.close();
+            return true;
+        }
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

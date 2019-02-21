@@ -1,13 +1,10 @@
-import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
@@ -23,9 +20,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class InteractionWindow extends JFrame 
 {
+    private static final long serialVersionUID = 1L;
     private double evenSplit = 0.5;
     private double minorFeature = 0.1;
     private Folder root;
@@ -95,8 +95,30 @@ public class InteractionWindow extends JFrame
         JMenuItem saveNew = new JMenuItem("save to selected location");
         JMenuItem createNewFolder = new JMenuItem("create new folder");
         
+        saveNew.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(currentFile == null)
+                {
+                    String name = getNameInput("File");
+                    boolean unique = false;
+                    String location = "";
+                    do 
+                    {
+                        location = ThreadLocalRandom.current().nextInt(0, 600000) + ".txt";
+                        File f = new File(location);
+                        unique = !f.exists();
+                    } while(unique == false);
+                    currentFile = new TextFile(name, location);
+                }
+                String content = editor.getText();
+                SaveAndLoadUtilities.saveFile(currentFile, content);
+            }
+        });
         
-        createNewFolder.addActionListener(new ActionListener() {
+        createNewFolder.addActionListener(new ActionListener() 
+        {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Object folderOrFile = filesDisplay.getSelectionPath().getLastPathComponent();
