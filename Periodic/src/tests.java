@@ -28,7 +28,7 @@ public class tests {
         
         SaveAndLoadUtilities.saveDirectoryStructure(root);
         
-        Folder rootCopy = SaveAndLoadUtilities.loadDirectoryStructure("root.sav");
+        Folder rootCopy = SaveAndLoadUtilities.loadDirectoryStructure();
         
         String actual = rootCopy.toString();
         System.out.println(expected);

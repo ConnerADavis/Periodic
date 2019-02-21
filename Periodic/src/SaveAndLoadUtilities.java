@@ -30,7 +30,7 @@ public class SaveAndLoadUtilities
         }
     }
     
-    public static Folder loadDirectoryStructure(String fileName)
+    public static Folder loadDirectoryStructure()
     {
         Folder root = new Folder("root");
         try 
