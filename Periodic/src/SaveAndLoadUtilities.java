@@ -65,6 +65,10 @@ public class SaveAndLoadUtilities
     
     public static boolean saveFile(TextFile file, String content)
     {
+        if(file == null)
+        {
+            return false;
+        }
         String location = file.getLocation();
         File realFile = new File(location);
         try 

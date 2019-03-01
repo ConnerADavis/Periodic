@@ -122,7 +122,7 @@ public class InteractionWindow extends JFrame
         add(outerSplitPane, BorderLayout.CENTER);
         
         JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu("Placeholder Menu Name");
+        JMenu menu = new JMenu("Options");
         JMenuItem login = new JMenuItem("log in");
         JMenuItem saveFile = new JMenuItem("save changes");
         JMenuItem saveNew = new JMenuItem("save current file to selected folder");
@@ -155,7 +155,7 @@ public class InteractionWindow extends JFrame
                     String location = "";
                     do 
                     {
-                        location = ThreadLocalRandom.current().nextInt(0, 600000) + ".txt";
+                        location = name + ThreadLocalRandom.current().nextInt(0, 600000) + ".txt";
                         File f = new File(location);
                         unique = !f.exists();
                     } while(unique == false);
@@ -207,6 +207,7 @@ public class InteractionWindow extends JFrame
         add(menuBar, BorderLayout.NORTH);
         setSize(1024, 768);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setTitle("Periodic");
         
         
         addWindowListener(new WindowAdapter() 
@@ -218,6 +219,8 @@ public class InteractionWindow extends JFrame
                 dispose();
             }
         });
+        
+        setLocationRelativeTo(null);
     }
     
     private String getNameInput(String folderOrFile)
