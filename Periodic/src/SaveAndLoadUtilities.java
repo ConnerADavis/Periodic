@@ -2,14 +2,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Scanner;
 
 public class SaveAndLoadUtilities 
 {
@@ -17,7 +15,7 @@ public class SaveAndLoadUtilities
     {
         try 
         {
-            FileOutputStream saveFile = new FileOutputStream("root.sav");
+            FileOutputStream saveFile = new FileOutputStream("Files/root.sav");
             ObjectOutputStream save = new ObjectOutputStream(saveFile);
             save.writeObject(folder);
             save.close();
@@ -40,7 +38,7 @@ public class SaveAndLoadUtilities
         Folder root = new Folder("root");
         try 
         {
-            FileInputStream saveFile = new FileInputStream("root.sav");
+            FileInputStream saveFile = new FileInputStream("Files/root.sav");
             ObjectInputStream save = new ObjectInputStream(saveFile);
             Object obj = save.readObject();
             root = (Folder)obj;
@@ -69,7 +67,7 @@ public class SaveAndLoadUtilities
         {
             return false;
         }
-        String location = file.getLocation();
+        String location = "Files/" + file.getLocation();
         File realFile = new File(location);
         try 
         {
@@ -88,7 +86,7 @@ public class SaveAndLoadUtilities
     public static String loadFile(TextFile file)
     {
     	String toReturn = "";
-    	String location = file.getLocation();
+    	String location = "Files/" +file.getLocation();
     	try 
     	{
     		toReturn = new String(Files.readAllBytes(Paths.get(location)));

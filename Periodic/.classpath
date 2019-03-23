@@ -16,5 +16,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="E:/Documents/Capstone/ftp4j-1.7.2/ftp4j-1.7.2.jar"/>
+	<classpathentry kind="lib" path="E:/Documents/Capstone/commons-net-3.6/commons-net-3.6.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

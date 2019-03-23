@@ -32,10 +32,18 @@ public class InteractionWindow extends JFrame
     private double minorFeature = 0.1;
     private Folder root;
     private TextFile currentFile;
+    private String username = "testuser";
+    private String password = "";
     public InteractionWindow()
     {
         
         root = SaveAndLoadUtilities.loadDirectoryStructure();
+        
+        File container = new File("Files");
+        if(!container.exists())
+        {
+            container.mkdir();
+        }
         
         // TODO: declutter this
         setLayout(new BorderLayout());
@@ -127,6 +135,9 @@ public class InteractionWindow extends JFrame
         JMenuItem saveFile = new JMenuItem("save changes");
         JMenuItem saveNew = new JMenuItem("save current file to selected folder");
         JMenuItem createNewFolder = new JMenuItem("create new folder");
+        JMenuItem delete = new JMenuItem("delete");
+        JMenuItem upload = new JMenuItem("upload files");
+        JMenuItem download = new JMenuItem("download files");
         
         saveFile.addActionListener(new ActionListener() 
         {
@@ -198,11 +209,55 @@ public class InteractionWindow extends JFrame
             }
         });
         
+        delete.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object folderOrFile = filesDisplay.getSelectionPath().getLastPathComponent();
+                if(folderOrFile instanceof DirectoryObject)
+                {
+                    DirectoryObject toDelete = (DirectoryObject)folderOrFile;
+                    Folder parent = (Folder)(toDelete.getParent());
+                    if(parent != null)
+                    {
+                        parent.removeChild(toDelete);
+                        filesDisplay.updateUI();
+                    }
+                    else
+                    {
+                        System.out.println("Cannot delete root");
+                    }
+                }
+                else
+                {
+                    invalidInputMessage("No folder selected or object selected is not a folder.");
+                }
+            }
+        });
+        
+        upload.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(FileTransferUtilities.uploadFiles(username, password))
+                {
+                    invalidInputMessage("Successfully Uploaded Files");
+                }
+                else
+                {
+                    invalidInputMessage("Failure");
+                }
+            }
+            
+        });
         
         menu.add(login);
         menu.add(saveFile);
         menu.add(saveNew);
         menu.add(createNewFolder);
+        menu.add(delete);
+        menu.add(upload);
+        menu.add(download);
         menuBar.add(menu);
         add(menuBar, BorderLayout.NORTH);
         setSize(1024, 768);

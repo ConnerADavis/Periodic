@@ -70,4 +70,9 @@ public class DirectoryObject implements Serializable, TreeNode {
         children.add(other);
         other.setParent(this);
     }
+    
+    public void removeChild(DirectoryObject other)
+    {
+        children.remove(other);
+    }
 }
