@@ -29,6 +29,19 @@ public class FileTransferUtilities {
             File[] uploadFiles = container.listFiles();
             check(ftp, "cd", ftp.changeWorkingDirectory(username));
             
+            FTPFile[] remoteFiles = ftp.listFiles();
+            
+            for (FTPFile f : remoteFiles)
+            {
+                for(File g : uploadFiles)
+                {
+                    if(f.getName().equals(g.getName()))
+                    {
+                        check(ftp, "delete", ftp.deleteFile(f.getName()));
+                    }
+                }
+            }
+            
             for (File uploadfile : uploadFiles)
             {
                 if(uploadfile.isFile())

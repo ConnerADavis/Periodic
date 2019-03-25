@@ -255,6 +255,10 @@ public class InteractionWindow extends JFrame
                     loginMessage();
                 }
                 
+                SaveAndLoadUtilities.saveDirectoryStructure(root);
+                String content = editor.getText();
+                SaveAndLoadUtilities.saveFile(currentFile, content);
+                
                 if(FileTransferUtilities.uploadFiles(username, password))
                 {
                     dialogMessage("Successfully uploaded files");
