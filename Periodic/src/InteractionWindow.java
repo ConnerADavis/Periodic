@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeModel;
 
 import org.commonmark.node.*;
 import org.commonmark.parser.Parser;
@@ -32,8 +33,8 @@ public class InteractionWindow extends JFrame
     private double minorFeature = 0.1;
     private Folder root;
     private TextFile currentFile;
-    private String username = "testuser";
-    private String password = "";
+    private String username;
+    private String password;
     public InteractionWindow()
     {
         
@@ -139,6 +140,14 @@ public class InteractionWindow extends JFrame
         JMenuItem upload = new JMenuItem("upload files");
         JMenuItem download = new JMenuItem("download files");
         
+        login.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loginMessage();
+            }
+        });
+        
         saveFile.addActionListener(new ActionListener() 
         {
 			@Override
@@ -146,7 +155,7 @@ public class InteractionWindow extends JFrame
 			{
 				if(currentFile == null)
 				{
-					invalidInputMessage("current file is not saved anywhere");
+					dialogMessage("current file is not saved anywhere");
 					return;
 				}
 				String content = editor.getText();
@@ -184,7 +193,7 @@ public class InteractionWindow extends JFrame
                 }
                 else
                 {
-                	invalidInputMessage("You must have one folder selected to save the file in.");
+                	dialogMessage("You must have one folder selected to save the file in.");
                 }
             }
         });
@@ -204,7 +213,7 @@ public class InteractionWindow extends JFrame
                 }
                 else
                 {
-                    invalidInputMessage("No folder selected or object selected is not a folder.");
+                    dialogMessage("No folder selected or object selected is not a folder.");
                 }
             }
         });
@@ -230,7 +239,7 @@ public class InteractionWindow extends JFrame
                 }
                 else
                 {
-                    invalidInputMessage("No folder selected or object selected is not a folder.");
+                    dialogMessage("No folder selected or object selected is not a folder.");
                 }
             }
         });
@@ -239,17 +248,68 @@ public class InteractionWindow extends JFrame
         {
             @Override
             public void actionPerformed(ActionEvent e) {
+                
+                if(username == null || password == null)
+                {
+                    dialogMessage("Please log in before attempting to upload files");
+                    loginMessage();
+                }
+                
                 if(FileTransferUtilities.uploadFiles(username, password))
                 {
-                    invalidInputMessage("Successfully Uploaded Files");
+                    dialogMessage("Successfully uploaded files");
                 }
                 else
                 {
-                    invalidInputMessage("Failure");
+                    dialogMessage("Failed to upload files");
                 }
             }
             
         });
+        
+        download.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+                if(username == null || password == null)
+                {
+                    dialogMessage("Please log in before attempting to upload files");
+                    loginMessage();
+                }
+                
+                if(FileTransferUtilities.downloadFiles(username, password))
+                {
+                    root = SaveAndLoadUtilities.loadDirectoryStructure();
+                    
+                    Folder tmp = root;
+                    
+                    DefaultTreeModel model = (DefaultTreeModel)filesDisplay.getModel();
+                    model.setRoot(root);                    
+                    model.reload(root);
+                    
+                    filesDisplay.updateUI();
+                    
+                    dialogMessage("Successfully downloaded remote files");
+                }
+                else
+                {
+                    dialogMessage("Failed to download files");
+                }
+            }
+        });
+        
+        /*JMenuItem debug = new JMenuItem("refresh tree");
+        
+        debug.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) 
+            {
+                System.out.println(root);
+                filesDisplay.updateUI();
+            }
+        });*/
         
         menu.add(login);
         menu.add(saveFile);
@@ -258,6 +318,9 @@ public class InteractionWindow extends JFrame
         menu.add(delete);
         menu.add(upload);
         menu.add(download);
+        
+        //menu.add(debug);
+        
         menuBar.add(menu);
         add(menuBar, BorderLayout.NORTH);
         setSize(1024, 768);
@@ -284,10 +347,16 @@ public class InteractionWindow extends JFrame
         return in;
     }
     
-    private void invalidInputMessage(String str)
+    private void dialogMessage(String str)
     {
         JOptionPane.showMessageDialog(this, new JLabel(str), 
                 "Message",JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    private void loginMessage()
+    {
+        username = JOptionPane.showInputDialog("Username");
+        password = JOptionPane.showInputDialog("Password");
     }
     
     public static void main(String[] args) 
