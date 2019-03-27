@@ -131,22 +131,20 @@ public class InteractionWindow extends JFrame
         add(outerSplitPane, BorderLayout.CENTER);
         
         JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu("Options");
-        JMenuItem login = new JMenuItem("log in");
+        
+        JMenu fileMenu = new JMenu("File");
+        JMenu cloudMenu = new JMenu("Cloud");
+        
         JMenuItem saveFile = new JMenuItem("save changes");
         JMenuItem saveNew = new JMenuItem("save current file to selected folder");
         JMenuItem createNewFolder = new JMenuItem("create new folder");
         JMenuItem delete = new JMenuItem("delete");
+        
+
+        JMenuItem login = new JMenuItem("log in");
+        JMenuItem logout = new JMenuItem("log out");
         JMenuItem upload = new JMenuItem("upload files");
         JMenuItem download = new JMenuItem("download files");
-        
-        login.addActionListener(new ActionListener() 
-        {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                loginMessage();
-            }
-        });
         
         saveFile.addActionListener(new ActionListener() 
         {
@@ -244,6 +242,25 @@ public class InteractionWindow extends JFrame
             }
         });
         
+
+        login.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loginMessage();
+            }
+        });
+        
+        logout.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) 
+            {
+                username = null;
+                password = null;
+            }
+        });
+        
         upload.addActionListener(new ActionListener() 
         {
             @Override
@@ -315,17 +332,21 @@ public class InteractionWindow extends JFrame
             }
         });*/
         
-        menu.add(login);
-        menu.add(saveFile);
-        menu.add(saveNew);
-        menu.add(createNewFolder);
-        menu.add(delete);
-        menu.add(upload);
-        menu.add(download);
+        fileMenu.add(saveFile);
+        fileMenu.add(saveNew);
+        fileMenu.add(createNewFolder);
+        fileMenu.add(delete);
+        
+        
+        cloudMenu.add(login);
+        cloudMenu.add(logout);
+        cloudMenu.add(upload);
+        cloudMenu.add(download);
         
         //menu.add(debug);
         
-        menuBar.add(menu);
+        menuBar.add(fileMenu);
+        menuBar.add(cloudMenu);
         add(menuBar, BorderLayout.NORTH);
         setSize(1024, 768);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
