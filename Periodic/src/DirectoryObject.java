@@ -54,9 +54,8 @@ public class DirectoryObject implements Serializable, TreeNode {
         return this.children.isEmpty();
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public Enumeration children() {
+    public Enumeration<DirectoryObject> children() {
         return Collections.enumeration(this.children);
     }
     
