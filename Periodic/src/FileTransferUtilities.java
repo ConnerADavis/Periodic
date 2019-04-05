@@ -66,7 +66,8 @@ public class FileTransferUtilities {
     {
         FTPClient ftp = new FTPClient();
         
-        try {
+        try 
+        {
             ftp.connect("ec2-18-220-0-36.us-east-2.compute.amazonaws.com");
             check(ftp, "login", ftp.login(username, password));
             System.out.println("Successfully Connected to server");
@@ -90,10 +91,11 @@ public class FileTransferUtilities {
                 write.flush();
                 write.close();
             }
+            ftp.disconnect();
             return true;
         }
-        catch (IOException e) {
-            
+        catch (IOException e) 
+        {
             e.printStackTrace();
             return false;
         }
@@ -106,5 +108,21 @@ public class FileTransferUtilities {
         {
           throw new IOException("FTP error: " + ftp.getReplyString());
         }
+    }
+    
+    public static boolean checkLogin(String username, String password)
+    {
+    	FTPClient ftp = new FTPClient();
+        try 
+        {
+			ftp.connect("ec2-18-220-0-36.us-east-2.compute.amazonaws.com");
+            check(ftp, "login", ftp.login(username, password));
+            ftp.disconnect();
+        	return true;
+		} 
+        catch (IOException e) 
+        {
+        	return false;
+		}
     }
 }

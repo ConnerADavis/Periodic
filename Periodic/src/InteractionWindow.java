@@ -248,6 +248,13 @@ public class InteractionWindow extends JFrame
             @Override
             public void actionPerformed(ActionEvent e) {
                 loginMessage();
+                boolean valid = FileTransferUtilities.checkLogin(username, password);
+                if(!valid)
+                {
+                	dialogMessage("Invalid username or password");
+                	username = null;
+                	password = null;
+                }
             }
         });
         
