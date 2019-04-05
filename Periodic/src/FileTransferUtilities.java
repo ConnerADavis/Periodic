@@ -3,6 +3,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -47,9 +50,6 @@ public class FileTransferUtilities {
                 if(uploadfile.isFile())
                 {
                     InputStream input = new FileInputStream(uploadfile.getAbsolutePath());
-                    System.out.println(uploadfile.getName());
-                    System.out.println(ftp.printWorkingDirectory());
-                    System.out.println(ftp.printWorkingDirectory());
                     check(ftp, "store", ftp.storeFile(uploadfile.getName(), input));
                 }
             }
@@ -124,5 +124,93 @@ public class FileTransferUtilities {
         {
         	return false;
 		}
+    }
+
+    public static boolean syncFiles(String username, String password) 
+    {
+        FTPClient ftp = new FTPClient();
+        try 
+        {
+            ftp.connect("ec2-18-220-0-36.us-east-2.compute.amazonaws.com");
+            check(ftp, "login", ftp.login(username, password));
+            System.out.println("Successfully Connected to server");
+            
+            check(ftp, "cd", ftp.changeWorkingDirectory(username));
+            
+            ArrayList<FTPFile> remote = new ArrayList<FTPFile>(Arrays.asList(ftp.listFiles()));
+            ArrayList<File> local = new ArrayList<File>(Arrays.asList(new File("Files").listFiles()));
+            ArrayList<String> remoteNames = new ArrayList<String>();
+            ArrayList<String> localNames = new ArrayList<String>();
+            
+            for(FTPFile r : remote)
+            {
+                remoteNames.add(r.getName());
+            }
+            
+            for(File f : local)
+            {
+                localNames.add(f.getName());
+            }
+            
+            for(FTPFile r : remote)
+            {
+                if(!localNames.contains(r.getName()))
+                {
+                    String localName = "Files/" + r.getName();
+                    FileOutputStream write = new FileOutputStream(new File(localName));
+                    ftp.retrieveFile(r.getName(), write);
+                    write.flush();
+                    write.close();
+                }
+                else
+                {
+                    for(File f : local)
+                    {
+                        if(f.getName().equals(r.getName()))
+                        {
+                            if(new Date(f.lastModified()).before(r.getTimestamp().getTime()))
+                            {
+                                String localName = "Files/" + r.getName();
+                                FileOutputStream write = new FileOutputStream(new File(localName));
+                                ftp.retrieveFile(r.getName(), write);
+                                write.flush();
+                                write.close();
+                            }
+                        }
+                    }
+                }
+            }
+            
+            for(File f : local)
+            {
+                if(!remoteNames.contains(f.getName()))
+                {
+                    InputStream input = new FileInputStream(f.getAbsolutePath());
+                    check(ftp, "store", ftp.storeFile(f.getName(), input));
+                }
+                else
+                {
+                    for(FTPFile r : remote)
+                    {
+                        if(r.getName().equals(f.getName()))
+                        {
+                            if(new Date(f.lastModified()).after(r.getTimestamp().getTime()))
+                            {
+                                InputStream input = new FileInputStream(f.getAbsolutePath());
+                                check(ftp, "store", ftp.storeFile(f.getName(), input));
+                            }
+                        }
+                    }
+                }
+            }
+            
+            ftp.disconnect();
+            return true;
+        }
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

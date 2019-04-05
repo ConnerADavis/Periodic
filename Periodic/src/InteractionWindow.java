@@ -146,6 +146,7 @@ public class InteractionWindow extends JFrame
         JMenuItem logout = new JMenuItem("log out");
         JMenuItem upload = new JMenuItem("upload files");
         JMenuItem download = new JMenuItem("download files");
+        JMenuItem sync = new JMenuItem("Sync Files");
         
         newFile.addActionListener(new ActionListener() 
         {
@@ -335,8 +336,6 @@ public class InteractionWindow extends JFrame
                 {
                     root = SaveAndLoadUtilities.loadDirectoryStructure();
                     
-                    Folder tmp = root;
-                    
                     DefaultTreeModel model = (DefaultTreeModel)filesDisplay.getModel();
                     model.setRoot(root);                    
                     model.reload(root);
@@ -350,6 +349,43 @@ public class InteractionWindow extends JFrame
                     dialogMessage("Failed to download files");
                 }
             }
+        });
+        
+        sync.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) 
+            {
+                if(username == null || password == null)
+                {
+                    dialogMessage("Please log in before attempting to sync files");
+                    loginMessage();
+                }
+                
+                if(FileTransferUtilities.syncFiles(username, password))
+                {
+                    root = SaveAndLoadUtilities.loadDirectoryStructure();
+                    
+                    DefaultTreeModel model = (DefaultTreeModel)filesDisplay.getModel();
+                    model.setRoot(root);                    
+                    model.reload(root);
+                    
+                    filesDisplay.updateUI();
+                    
+                    dialogMessage("Successfully downloaded remote files");
+                    SaveAndLoadUtilities.deleteNoLongerReferencedFiles(root);
+                }
+                else
+                {
+                    dialogMessage("Failed to download files");
+                    if(confirmMessage("Log out?") == JOptionPane.YES_OPTION)
+                    {
+                        username = null;
+                        password = null;
+                    }
+                }
+            }
+            
         });
         
         JMenuItem deleteUnreferencedFiles = new JMenuItem("delete unreferenced files");
@@ -375,6 +411,7 @@ public class InteractionWindow extends JFrame
         cloudMenu.add(logout);
         cloudMenu.add(upload);
         cloudMenu.add(download);
+        cloudMenu.add(sync);
         
         debugMenu.add(deleteUnreferencedFiles);
         
