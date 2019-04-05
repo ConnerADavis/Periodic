@@ -8,6 +8,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 public class SaveAndLoadUtilities 
 {
@@ -102,5 +104,54 @@ public class SaveAndLoadUtilities
     		e.printStackTrace();
     		return toReturn;
 		}
+    }
+    
+    public static void deleteNoLongerReferencedFiles(Folder root)
+    {
+        ArrayList<String> locations = new ArrayList<String>();
+        getFiles(root, locations);
+        File folder = new File("Files");
+        File[] folderFiles = folder.listFiles();
+        
+        for(File f : folderFiles)
+        {
+            if(locations.contains(f.getName()) || f.getName().equals("root.sav"))
+            {
+                continue;
+            }
+            f.delete();
+        }
+        
+        /*for(File f : folderFiles)
+        {
+            System.out.print(f.getPath());
+        }
+        
+        System.out.println("");
+        
+        for(String location : locations)
+        {
+            System.out.println(location);
+        }*/
+    }
+    
+    private static void getFiles(Folder root, ArrayList<String> locations)
+    {
+        Enumeration<DirectoryObject> e = root.children();
+        
+        while(e.hasMoreElements())
+        {
+            DirectoryObject it = e.nextElement();
+            if(it instanceof Folder)
+            {
+                Folder f = (Folder)it;
+                getFiles(f, locations);
+            }
+            else if(it instanceof TextFile)
+            {
+                TextFile f = (TextFile)it;
+                locations.add(f.getLocation());
+            }
+        }
     }
 }

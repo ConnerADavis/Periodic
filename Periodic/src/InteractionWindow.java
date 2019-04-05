@@ -135,6 +135,7 @@ public class InteractionWindow extends JFrame
         JMenu fileMenu = new JMenu("File");
         JMenu cloudMenu = new JMenu("Cloud");
         
+        JMenuItem newFile = new JMenuItem("New File");
         JMenuItem saveFile = new JMenuItem("save changes");
         JMenuItem saveNew = new JMenuItem("save current file to selected folder");
         JMenuItem createNewFolder = new JMenuItem("create new folder");
@@ -145,6 +146,30 @@ public class InteractionWindow extends JFrame
         JMenuItem logout = new JMenuItem("log out");
         JMenuItem upload = new JMenuItem("upload files");
         JMenuItem download = new JMenuItem("download files");
+        
+        newFile.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) 
+            {
+                if(currentFile != null)
+                {
+                    int decision = confirmMessage("Save changes to current file?");
+                    if(decision == JOptionPane.YES_OPTION)
+                    {
+                        String content = editor.getText();
+                        SaveAndLoadUtilities.saveFile(currentFile, content);
+                    }
+                    else if(decision == JOptionPane.CANCEL_OPTION)
+                    {
+                        return;
+                    }
+                }
+                currentFile = null;
+                editor.setText("");
+                display.setText("");
+            }
+        });
         
         saveFile.addActionListener(new ActionListener() 
         {
@@ -327,18 +352,19 @@ public class InteractionWindow extends JFrame
             }
         });
         
-        /*JMenuItem debug = new JMenuItem("refresh tree");
+        JMenuItem deleteUnreferencedFiles = new JMenuItem("delete unreferenced files");
+        JMenu debugMenu = new JMenu("Debug");
         
-        debug.addActionListener(new ActionListener()
+        deleteUnreferencedFiles.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                System.out.println(root);
-                filesDisplay.updateUI();
+                SaveAndLoadUtilities.deleteNoLongerReferencedFiles(root);
             }
-        });*/
+        });
         
+        fileMenu.add(newFile);
         fileMenu.add(saveFile);
         fileMenu.add(saveNew);
         fileMenu.add(createNewFolder);
@@ -350,10 +376,13 @@ public class InteractionWindow extends JFrame
         cloudMenu.add(upload);
         cloudMenu.add(download);
         
-        //menu.add(debug);
+        debugMenu.add(deleteUnreferencedFiles);
         
         menuBar.add(fileMenu);
         menuBar.add(cloudMenu);
+        
+        //menuBar.add(debugMenu);
+        
         add(menuBar, BorderLayout.NORTH);
         setSize(1024, 768);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -365,6 +394,7 @@ public class InteractionWindow extends JFrame
             @Override
             public void windowClosing(WindowEvent arg0)
             {
+                SaveAndLoadUtilities.deleteNoLongerReferencedFiles(root);
                 SaveAndLoadUtilities.saveDirectoryStructure(root);
                 dispose();
             }
@@ -389,6 +419,11 @@ public class InteractionWindow extends JFrame
     {
         username = JOptionPane.showInputDialog("Username");
         password = JOptionPane.showInputDialog("Password");
+    }
+    
+    private int confirmMessage(String str)
+    {
+        return JOptionPane.showConfirmDialog(this, str, str, JOptionPane.YES_NO_CANCEL_OPTION);
     }
     
     public static void main(String[] args) 
