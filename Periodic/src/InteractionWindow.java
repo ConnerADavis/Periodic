@@ -5,9 +5,13 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JSplitPane;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
+import javax.swing.SwingConstants;
 import javax.swing.tree.DefaultTreeModel;
 
 import org.commonmark.node.*;
@@ -15,6 +19,7 @@ import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -274,13 +279,6 @@ public class InteractionWindow extends JFrame
             @Override
             public void actionPerformed(ActionEvent e) {
                 loginMessage();
-                boolean valid = FileTransferUtilities.checkLogin(username, password);
-                if(!valid)
-                {
-                	dialogMessage("Invalid username or password");
-                	username = null;
-                	password = null;
-                }
             }
         });
         
@@ -454,8 +452,30 @@ public class InteractionWindow extends JFrame
     
     private void loginMessage()
     {
-        username = JOptionPane.showInputDialog("Username");
-        password = JOptionPane.showInputDialog("Password");
+    	JPanel panel = new JPanel(new BorderLayout(5, 5));
+    	JPanel label = new JPanel(new GridLayout(0, 1, 2, 2));
+    	label.add(new JLabel("E-Mail", SwingConstants.RIGHT));
+    	label.add(new JLabel("Password", SwingConstants.RIGHT));
+    	panel.add(label, BorderLayout.WEST);
+    	JPanel controls = new JPanel(new GridLayout(0, 1, 2, 2));
+    	JTextField user = new JTextField();
+    	controls.add(user);
+    	JPasswordField pass = new JPasswordField();
+    	controls.add(pass);
+    	panel.add(controls, BorderLayout.CENTER);
+    	
+    	JOptionPane.showMessageDialog(this, panel, "login", JOptionPane.QUESTION_MESSAGE);
+    	
+    	username = user.getText();
+    	password = new String(pass.getPassword());
+
+        boolean valid = FileTransferUtilities.checkLogin(username, password);
+        if(!valid)
+        {
+        	dialogMessage("Invalid username or password");
+        	username = null;
+        	password = null;
+        }
     }
     
     private int confirmMessage(String str)

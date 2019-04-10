@@ -17,6 +17,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/home/conner/Documents/Capstone/commons-net-3.6/commons-net-3.6.jar"/>
-	<classpathentry kind="lib" path="/home/conner/Documents/Capstone/ftp4j-1.7.2/ftp4j-1.7.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
