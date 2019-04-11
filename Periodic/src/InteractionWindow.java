@@ -274,6 +274,7 @@ public class InteractionWindow extends JFrame
             {
                 username = null;
                 password = null;
+                dialogMessage("logged out");
             }
         });
         
@@ -460,6 +461,10 @@ public class InteractionWindow extends JFrame
         	dialogMessage("Invalid username or password");
         	username = null;
         	password = null;
+        }
+        else
+        {
+            dialogMessage("Successsfully logged in");
         }
     }
     
