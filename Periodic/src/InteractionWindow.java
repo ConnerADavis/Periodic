@@ -51,7 +51,6 @@ public class InteractionWindow extends JFrame
             container.mkdir();
         }
         
-        // TODO: declutter this
         setLayout(new BorderLayout());
         JTree filesDisplay = new JTree(root, true);
         JSplitPane outerSplitPane = new JSplitPane();
@@ -64,24 +63,10 @@ public class InteractionWindow extends JFrame
         {
 
             @Override
-            public void keyTyped(KeyEvent e) {
-                /*String markdown = editor.getText();
-                Parser parser = Parser.builder().build();
-                Node document = parser.parse(markdown);
-                HtmlRenderer renderer = HtmlRenderer.builder().build();
-                String html = renderer.render(document);
-                display.setText(html);*/
-            }
+            public void keyTyped(KeyEvent e) {}
 
             @Override
-            public void keyPressed(KeyEvent e) {
-                /*String markdown = editor.getText();
-                Parser parser = Parser.builder().build();
-                Node document = parser.parse(markdown);
-                HtmlRenderer renderer = HtmlRenderer.builder().build();
-                String html = renderer.render(document);
-                display.setText(html);*/
-            }
+            public void keyPressed(KeyEvent e) {}
 
             @Override
             public void keyReleased(KeyEvent e) {
@@ -454,7 +439,7 @@ public class InteractionWindow extends JFrame
     {
     	JPanel panel = new JPanel(new BorderLayout(5, 5));
     	JPanel label = new JPanel(new GridLayout(0, 1, 2, 2));
-    	label.add(new JLabel("E-Mail", SwingConstants.RIGHT));
+    	label.add(new JLabel("Username", SwingConstants.RIGHT));
     	label.add(new JLabel("Password", SwingConstants.RIGHT));
     	panel.add(label, BorderLayout.WEST);
     	JPanel controls = new JPanel(new GridLayout(0, 1, 2, 2));

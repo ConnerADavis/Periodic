@@ -121,18 +121,6 @@ public class SaveAndLoadUtilities
             }
             f.delete();
         }
-        
-        /*for(File f : folderFiles)
-        {
-            System.out.print(f.getPath());
-        }
-        
-        System.out.println("");
-        
-        for(String location : locations)
-        {
-            System.out.println(location);
-        }*/
     }
     
     private static void getFiles(Folder root, ArrayList<String> locations)
